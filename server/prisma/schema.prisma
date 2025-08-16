@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Superhero {
+  id                 String      @id @default(cuid())
+  nickname           String      @unique
+  realName           String      @map("real_name")
+  originDescription  String      @db.Text @map("origin_description")
+  superpowers        String[]
+  catchPhrase        String      @map("catch_phrase")
+  images             HeroImage[]
+
+  createdAt          DateTime    @default(now()) @map("created_at")
+  updatedAt          DateTime    @updatedAt      @map("updated_at")
+}
+
+model HeroImage {
+  id           String    @id @default(cuid())
+  url          String
+  
+  superheroId  String    @map("superhero_id")
+  superhero    Superhero @relation(fields: [superheroId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime  @default(now()) @map("created_at")
+}
