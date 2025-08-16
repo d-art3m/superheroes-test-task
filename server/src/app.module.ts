@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { SuperheroesModule } from './superheroes/superheroes.module';
 import { PrismaModule } from 'prisma/prisma.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { PrismaModule } from 'prisma/prisma.module';
     }),
     PrismaModule,
     SuperheroesModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
