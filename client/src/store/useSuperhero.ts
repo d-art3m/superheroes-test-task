@@ -117,7 +117,7 @@ export const useSuperhero = create<SuperheroState & SuperheroActions>((set, get)
       const updatedHero = await updateSuperheroAPI(id, data);
       set(state => ({
         superheroes: state.superheroes.map(hero => hero.id === id ? { ...hero, ...updatedHero } : hero),
-        selectedSuperhero: state.selectedSuperhero?.id === id ? updatedHero : state.selectedSuperhero,
+        selectedSuperhero: state.selectedSuperhero?.id === id ? { ...state.selectedSuperhero, ...updatedHero } : state.selectedSuperhero,
       }));
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to update superhero.';
