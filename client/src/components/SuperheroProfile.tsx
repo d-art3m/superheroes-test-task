@@ -6,6 +6,14 @@ import SuperheroAddEdit from './SuperheroAddEdit';
 import { ArrowLeft, FilePenLine, Trash2 } from 'lucide-react';
 import notFound from '/image-not-found.svg';
 
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from '@/components/ui/carousel';
+
 const SuperheroProfile: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -26,16 +34,7 @@ const SuperheroProfile: React.FC = () => {
     };
   }, [id, fetchSuperheroById, clearSelectedSuperhero]);
 
-  const [mainImage, setMainImage] = useState<string | undefined>(undefined);
   const [isEditing, setIsEditing] = useState(false);
-
-  useEffect(() => {
-    if (selectedSuperhero?.images && selectedSuperhero.images.length > 0) {
-      setMainImage(selectedSuperhero.images[0].url);
-    } else {
-      setMainImage(notFound);
-    }
-  }, [selectedSuperhero]);
 
   const handleDelete = async () => {
     if (
@@ -74,6 +73,11 @@ const SuperheroProfile: React.FC = () => {
     return <p className="text-center text-lg">Superhero not found</p>;
   }
 
+  const images =
+    selectedSuperhero.images && selectedSuperhero.images.length > 0
+      ? selectedSuperhero.images
+      : [{ url: notFound }];
+
   return (
     <div className="container mx-auto p-4 w-full max-w-5xl">
       <div className="flex justify-end items-center gap-4 mb-8">
@@ -93,37 +97,31 @@ const SuperheroProfile: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
         <div className="flex flex-col gap-4">
-          <div className="aspect-square w-full bg-muted rounded-lg overflow-hidden border">
-            <img
-              src={mainImage}
-              alt={`Main image of ${selectedSuperhero.nickname}`}
-              className="w-full h-full object-cover"
-              onError={e => {
-                e.currentTarget.src = notFound;
-              }}
-            />
-          </div>
-          {selectedSuperhero.images.length > 1 && (
-            <div className="grid grid-cols-5 gap-2">
-              {selectedSuperhero.images.map(image => (
-                <button
-                  key={image.url}
-                  className={`aspect-square rounded-md overflow-hidden outline-none transition-all focus-visible:ring-ring/50 focus-visible:ring-[3px] ${
-                    mainImage === image.url
-                      ? 'ring-primary/80 ring-[3px]'
-                      : 'hover:opacity-80'
-                  }`}
-                  onClick={() => setMainImage(image.url)}
-                >
-                  <img
-                    src={image.url}
-                    alt={`Image of ${selectedSuperhero.nickname}`}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
+          <Carousel className="w-full">
+            <CarouselContent>
+              {images.map((image) => (
+                <CarouselItem key={image.url}>
+                  <div className="aspect-square w-full bg-muted rounded-lg overflow-hidden">
+                    <img
+                      src={image.url}
+                      alt={`Image of ${selectedSuperhero.nickname}`}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = notFound;
+                      }}
+                    />
+                  </div>
+                </CarouselItem>
               ))}
-            </div>
-          )}
+            </CarouselContent>
+
+            {images.length > 1 && (
+              <>
+                <CarouselPrevious className="left-3" />
+                <CarouselNext className="right-3" />
+              </>
+            )}
+          </Carousel>
         </div>
 
         <div className="flex flex-col gap-6">
