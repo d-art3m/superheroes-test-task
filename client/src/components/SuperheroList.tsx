@@ -4,6 +4,7 @@ import SuperheroCard from './SuperheroCard';
 import { Button } from './ui/button';
 import { PlusCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Loader from './Loader';
 import {
   Pagination,
   PaginationContent,
@@ -66,7 +67,7 @@ const SuperheroList: React.FC = () => {
         </Button>
       </div>
 
-      {loading && <p className="text-center text-lg">Loading heroes...</p>}
+      {loading && <Loader />}
       
       {error && (
         <p className="text-center text-lg text-destructive">Error: {error}</p>

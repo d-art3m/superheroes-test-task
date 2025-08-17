@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import SuperheroAddEdit from './SuperheroAddEdit';
 import { ArrowLeft, FilePenLine, Trash2 } from 'lucide-react';
 import notFound from '/image-not-found.svg';
+import Loader from './Loader';
 
 import {
   Carousel,
@@ -47,11 +48,7 @@ const SuperheroProfile: React.FC = () => {
   };
 
   if (loading.details) {
-    return (
-      <p className="text-center text-lg animate-pulse">
-        Loading hero details...
-      </p>
-    );
+    return <Loader />;
   }
 
   if (error) {
@@ -126,7 +123,7 @@ const SuperheroProfile: React.FC = () => {
 
         <div className="flex flex-col gap-6">
           <div>
-            <h1 className="text-5xl font-extrabold tracking-tighter">
+            <h1 className="text-3xl font-extrabold tracking-tighter">
               {selectedSuperhero.nickname}
             </h1>
             <p className="text-xl text-muted-foreground mt-1">
