@@ -62,7 +62,12 @@ const SuperheroProfile: React.FC = () => {
   }
 
   if (isEditing) {
-    return <SuperheroAddEdit />;
+    return (
+      <SuperheroAddEdit
+        onCancel={() => setIsEditing(false)}
+        onSuccess={() => setIsEditing(false)}
+      />
+    );
   }
 
   if (!selectedSuperhero) {

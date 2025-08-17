@@ -34,7 +34,7 @@ interface SuperheroActions {
   fetchSuperheroes: (page?: number, limit?: number) => Promise<void>;
   fetchSuperheroById: (id: string) => Promise<void>;
   createSuperhero: (data: CreateSuperheroDto) => Promise<SuperheroWithImages | undefined>;
-  updateSuperhero: (id: string, data: UpdateSuperheroDto) => Promise<void>;
+  updateSuperhero: (id: string, data: UpdateSuperheroDto) => Promise<SuperheroWithImages | undefined>;
   deleteSuperhero: (id: string) => Promise<void>;
   uploadImage: (file: File) => Promise<string | undefined>;
   clearSelectedSuperhero: () => void;
@@ -121,6 +121,7 @@ export const useSuperhero = create<SuperheroState & SuperheroActions>((set, get)
         superheroes: state.superheroes.map(hero => hero.id === id ? { ...hero, ...updatedHero } : hero),
         selectedSuperhero: state.selectedSuperhero?.id === id ? { ...state.selectedSuperhero, ...updatedHero } : state.selectedSuperhero,
       }));
+      return updatedHero;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to update superhero.';
       set({ error: message });

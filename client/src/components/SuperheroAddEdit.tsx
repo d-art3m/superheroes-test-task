@@ -24,7 +24,12 @@ const formSchema = z.object({
 
 type SuperheroFormData = z.infer<typeof formSchema>;
 
-const SuperheroAddEdit: React.FC = () => {
+type Props = {
+  onCancel?: () => void;
+  onSuccess?: () => void;
+};
+
+const SuperheroAddEdit: React.FC<Props> = ({ onCancel, onSuccess }) => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEditMode = !!id;
@@ -56,9 +61,11 @@ const SuperheroAddEdit: React.FC = () => {
   useEffect(() => {
     return () => {
       setError(null);
-      clearSelectedSuperhero();
+      if (!isEditMode) {
+        clearSelectedSuperhero();
+      }
     };
-  }, [setError, clearSelectedSuperhero]);
+  }, [setError, clearSelectedSuperhero, isEditMode]);
 
   useEffect(() => {
     if (isEditMode && selectedSuperhero) {
@@ -111,6 +118,9 @@ const SuperheroAddEdit: React.FC = () => {
 
     const submissionError = useSuperhero.getState().error;
     if (!submissionError) {
+      if (onSuccess) {
+        onSuccess();
+      }
       const heroId = result?.id;
       navigate(heroId ? `/superhero/${heroId}` : '/');
     }
@@ -201,7 +211,7 @@ const SuperheroAddEdit: React.FC = () => {
             {error && <p className="text-sm font-medium text-destructive">{error}</p>}
           </CardContent>
           <CardFooter className="flex justify-end gap-4">
-            <Button type="button" variant="outline" onClick={() => navigate(-1)}>Cancel</Button>
+            <Button type="button" variant="outline" onClick={() => (onCancel ? onCancel() : navigate(-1))}>Cancel</Button>
             <Button type="submit" disabled={isLoading}>
               {isLoading && <Loader2 className="mr-2 size-4 animate-spin" />}
               {isEditMode ? 'Save Changes' : 'Create Hero'}
