@@ -102,7 +102,9 @@ export const useSuperhero = create<SuperheroState & SuperheroActions>((set, get)
   createSuperhero: async (data) => {
     set(state => ({ ...state, loading: { ...state.loading, create: true }, error: null }));
     try {
-      return await createSuperheroAPI(data);
+      const newHero = await createSuperheroAPI(data);
+      set({ currentPage: 1 });
+      return newHero;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to create superhero';
       set({ error: message });

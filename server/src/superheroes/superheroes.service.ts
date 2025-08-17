@@ -32,9 +32,9 @@ export class SuperheroesService {
       this.prisma.superhero.findMany({
         skip,
         take: limit,
-        orderBy: { id: 'asc' },
+        orderBy: { id: 'desc' },
         include: {
-          images: { take: 1, orderBy: { id: 'asc' }, select: { url: true } },
+          images: { take: 1, orderBy: { id: 'desc' }, select: { url: true } },
         },
       }),
       this.prisma.superhero.count(),
@@ -46,7 +46,7 @@ export class SuperheroesService {
   async findOne(id: string): Promise<SuperheroWithImages> {
     const hero = await this.prisma.superhero.findUnique({
       where: { id },
-      include: { images: { orderBy: { id: 'asc' }, select: { url: true } } },
+      include: { images: { orderBy: { id: 'desc' }, select: { url: true } } },
     });
     if (!hero) throw new NotFoundException('Superhero not found');
     return hero;

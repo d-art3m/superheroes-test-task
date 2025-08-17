@@ -27,7 +27,7 @@ const SuperheroCard: React.FC<SuperheroCardProps> = ({ superhero }) => {
           </div>
         </CardContent>
         <CardHeader>
-          <CardTitle className="text-center text-2xl tracking-tight">
+          <CardTitle className="text-center text-2xl tracking-tight truncate">
             {superhero.nickname}
           </CardTitle>
         </CardHeader>

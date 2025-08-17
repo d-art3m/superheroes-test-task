@@ -4,6 +4,15 @@ import SuperheroCard from './SuperheroCard';
 import { Button } from './ui/button';
 import { PlusCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationEllipsis
+} from '@/components/ui/pagination';
 
 const SuperheroList: React.FC = () => {
   const navigate = useNavigate();
@@ -15,16 +24,37 @@ const SuperheroList: React.FC = () => {
   const loading = useSuperhero(state => state.loading.list);
   const error = useSuperhero(state => state.error);
   const fetchSuperheroes = useSuperhero(state => state.fetchSuperheroes);
+  const clearSelectedSuperhero = useSuperhero(state => state.clearSelectedSuperhero);
+
+  type PageToken = number | '..';
+
+  const buildPaginationRange = (current: number, total: number): PageToken[] => {
+    if (total <= 5) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+
+    if (current <= 2) {
+      return [1, 2, '..', total];
+    }
+
+    if (current >= total - 1) {
+      return [1, '..', total - 1, total];
+    }
+
+    return [1, '..', current, '..', total];
+  }
 
   useEffect(() => {
     fetchSuperheroes(currentPage, limit);
-  }, [fetchSuperheroes, currentPage, limit]);
+    clearSelectedSuperhero();
+  }, [fetchSuperheroes, currentPage, limit, clearSelectedSuperhero]);
 
   const handlePageChange = (newPage: number) => {
     fetchSuperheroes(newPage, limit);
   };
 
   const totalPages = Math.ceil(totalHeroes / limit);
+  const paginationItems = buildPaginationRange(currentPage, totalPages);
 
   return (
     <div className="container mx-auto px-4 py-8 w-full max-w-6xl">
@@ -37,6 +67,7 @@ const SuperheroList: React.FC = () => {
       </div>
 
       {loading && <p className="text-center text-lg">Loading heroes...</p>}
+      
       {error && (
         <p className="text-center text-lg text-destructive">Error: {error}</p>
       )}
@@ -49,25 +80,52 @@ const SuperheroList: React.FC = () => {
             ))}
           </div>
 
-          <div className="flex items-center justify-center gap-4 mt-12">
-            <Button
-              variant="outline"
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage <= 1}
-            >
-              Previous
-            </Button>
-            <span className="text-muted-foreground">
-              Page {currentPage} of {totalPages || 1}
-            </span>
-            <Button
-              variant="outline"
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage >= totalPages}
-            >
-              Next
-            </Button>
-          </div>
+          {totalPages > 1 && (
+             <Pagination className="mt-12">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage > 1) handlePageChange(currentPage - 1);
+                    }}
+                    className={currentPage <= 1 ? 'pointer-events-none opacity-50' : ''}
+                  />
+                </PaginationItem>
+                
+                {paginationItems.map((item, index) => (
+                  <PaginationItem key={index}>
+                    {typeof item === 'number' ? (
+                      <PaginationLink
+                        href="#"
+                        isActive={currentPage === item}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handlePageChange(item);
+                        }}
+                      >
+                        {item}
+                      </PaginationLink>
+                    ) : (
+                      <PaginationEllipsis />
+                    )}
+                  </PaginationItem>
+                ))}
+
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage < totalPages) handlePageChange(currentPage + 1);
+                    }}
+                    className={currentPage >= totalPages ? 'pointer-events-none opacity-50' : ''}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
         </>
       )}
     </div>
