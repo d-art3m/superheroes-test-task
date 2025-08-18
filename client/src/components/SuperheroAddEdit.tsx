@@ -320,6 +320,7 @@ const SuperheroAddEdit: React.FC<Props> = ({ onCancel, onSuccess }) => {
                   <input
                     type="file"
                     multiple
+                    accept="image/*"
                     onChange={handleImageUpload}
                     disabled={isUploading}
                     className="sr-only"

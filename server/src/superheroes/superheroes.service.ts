@@ -4,7 +4,7 @@ import { CreateSuperheroDto } from './dto/create-superhero.dto';
 import { UpdateSuperheroDto } from './dto/update-superhero.dto';
 import { PaginationDto, PaginatedResult } from 'src/types/pagination';
 import { SuperheroWithImages } from 'src/types/superhero';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class SuperheroesService {
